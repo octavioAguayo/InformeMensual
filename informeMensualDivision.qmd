@@ -1,0 +1,181 @@
+---
+title: "Minuta coyuntural de empleo"
+author: "División de Políticas de Empleo"
+format:
+  docx:
+    reference-doc: estilos2.docx
+  pdf: 
+    geometry: margin=2cm
+  
+editor: source
+
+header-includes:
+  - \usepackage{ragged2e}
+  - \justifying
+---
+
+```{r setup, include=FALSE}
+  library(flextable)
+  library(ragg)
+  library(stringr)
+  library(dplyr)
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    message = FALSE,
+    warning = FALSE
+  )
+  Trim_Actual <- "202603"
+  source("Crea_Carga_BBDD.R")        
+  source("Funciones_ENE.R")        
+  source("Variables_ENE.R")  
+  source("CreaTablas.R")         # 4. Tablas + Excel (incluye cortes y res_filtrado)
+  source("CreaGraficos.R")           # 5. Gráficos (usa cortes definidos en CreaTablas)
+  
+```
+
+# **1. Contexto general del mercado en el trimestre `r fc_fecha_a_trimestre(fecha_Actual)`**
+
+La presente minuta analiza la evolución actual de los principales indicadores del mercado laboral respecto de tres puntos de comparación: cambios ocurridos desde el trimestre móvil inmediatamente anterior, el mismo trimestre del año anterior y otras fechas o rangos de fechas significativas que permiten mirar el mediano y largo plazo. 
+
+
+La fuerza de trabajo llegó a **`r fc_Form_Num(Val_Act_FT/1000000,1)` millones de personas** en el trimestre `r fc_fecha_a_trimestre(fecha_Actual)`, los ocupados alcanzaron **`r fc_Form_Num(Val_Act_Ocupados/1000000,1)` millones de personas**, con `r fc_frase_cambio(Delta_Año_Ocupados,0, "empleos", 1e-1,2)`, mientras que los desocupados llegaron a **`r fc_Form_Num(Val_Act_Desocupados/1000,1)` miles de personas, con `r fc_frase_cambio(Delta_Año_Desocupados,0, "desocupados", 1e-1,2)`**. Al observar los ocupados, vemos que los **ocupados informales** alcanzaron **`r fc_Form_Num(Val_Act_Ocupados_Inform/1000000,1)` millones de personas**, con `r fc_frase_cambio(Delta_Año_Ocupados_Inform,0, "empleos", 1e-1,2)`, mientras que los **ocupados formales** llegaron a **`r fc_Form_Num(Val_Act_Ocupados_Form/1000000,1)` millones de personas**, con `r fc_frase_cambio(Delta_Año_Ocupados_Form,0, "empleos", 1e-1,2)`.
+
+Tras el severo deterioro provocado por la crisis sanitaria del COVID-19 y en menor medida por el Estallido Social, el mercado laboral continúa mostrando signos de recuperación con variaciones interanuales, en general, positivas. Sin embargo, en los últimos trimestres, el mercado laboral muestra un deterioro de los ocupados formales y un aumento de las ocupaciones informales, con las implicancias de precariedad y menor protección laboral asociadas a ello.
+
+# **2. Ideas fuerza e indicadores principales del mercado laboral**
+
+•	En el trimestre `r fc_fecha_a_trimestre(fecha_Actual)`, **la tasa de participación laboral fue de `r fc_Form_Num(Tasa_Act_Particip,1)`%**, con una variación interanual de `r fc_Form_Num(Delta_Año_Tasa_Particip,1)` pp., y `r fc_frase_cambio(Delta_Mes_Tasa_Particip,1, "pp.", 1e-2,1)`  respecto a la medición del trimestre móvil anterior.
+
+•	Por su parte, **la tasa de desocupación nacional se situó en un `r fc_Form_Num(Tasa_Act_Desocup,1)`%, mostrando `r fc_frase_cambio(Delta_Año_Tasa_Desocup,1, "pp.", 1e-2,2)` interanual, y `r fc_frase_cambio(Delta_Mes_Tasa_Desocup,1, "pp.", 1e-2,2)`** respecto a la medición del trimestre móvil anterior. Esto es equivalente a `r fc_frase_cambio(Delta_Año_Desocupados,0, "personas", 9500,2)` desocupadas respecto al año anterior y `r fc_frase_cambio(Delta_Mes_Desocupados,0, "personas", 9500,2)` desocupadas respecto al trimestre anterior.  Particularmente, **la tasa de desocupación femenina se situó en `r fc_Form_Num(Tasa_Act_Desocup_Fem,1)`%, presentando `r fc_frase_cambio(Delta_Año_Tasa_Desocup_Fem,1, "pp.", 1e-2,2)` interanual, y `r fc_frase_cambio(Delta_Mes_Tasa_Desocup_Fem,1, "pp.", 1e-2,2)`** respecto del trimestre móvil anterior. Esto es equivalente a `r fc_frase_cambio(Delta_Año_Desocupados_Fem,0, "personas", 4000,2)` desocupadas respecto al año anterior y `r fc_frase_cambio(Delta_Mes_Desocupados_Fem,0, "personas", 4000,2)` desocupadas respecto al trimestre anterior.
+
+•	En doce meses, **los ocupados `r fc_frase_cambio(Delta_Año_Ocupados/Val_Act_Ocupados*100,1,"%",1e-2,3)`, lo que constituye `r fc_frase_cambio(Delta_Año_Ocupados,0, "personas", 9000,2)` más a nivel nacional**. Al verlo por género, la ocupación en hombres `r fc_frase_cambio(Delta_Año_Ocupados_Hom,0, "empleos", 5300,1)`, mientras que en mujeres presenta `r fc_frase_cambio(Delta_Año_Ocupados_Fem,0, "empleos", 4000,2)`.
+
+•	En cuanto al empleo formal, **en doce meses `r fc_frase_cambio(Delta_Año_Ocupados_Form,0, "", 5500,1)` empleos formales a nivel nacional**, entre los cuales hay `r fc_frase_cambio(Delta_Año_Ocupados_Form_Hom,0, "", 4000,2)` empleos formales de los hombres y `r fc_frase_cambio(Delta_Año_Ocupados_Form_Fem,0, "", 3000,2)` empleos formales de las mujeres. Particularmente, los empleos formales dependientes `r fc_frase_cambio(Delta_Año_Asal_Priv_Form+Delta_Año_Asal_Pub_Form+Delta_Año_Serv_Dom_Form,0, ".", 3000,3)`
+
+•	Las brechas de género en las tasas de desocupación y de participación continúan siendo significativas. **La tasa de desocupación fue de `r fc_Form_Num(Brecha_Act_Desocup,2)` pp. mayor entre las mujeres y la brecha en la tasa de participación fue de `r fc_Form_Num(Brecha_Act_Particip,1)` pp.**
+
+•	Respecto a la informalidad laboral, **la estimación de la tasa de ocupación informal fue de `r fc_Form_Num(Tasa_Act_Inform,1)`%, mostrando `r fc_frase_cambio(Delta_Año_Tasa_Inform,1, "pp.", 1e-2,2)` interanual, y `r fc_frase_cambio(Delta_Mes_Tasa_Inform,1, "pp.", 1e-2,1)` respecto a la medición del trimestre móvil anterior**. En términos de cantidades, a la fecha, las personas ocupadas informales son `r fc_Form_Num(Val_Act_Ocupados_Inform,0)` con `r fc_frase_cambio(Delta_Año_Ocupados_Inform,0, "", 2500,2)` a nivel nacional respecto del mismo trimestre del año anterior, y `r fc_frase_cambio(Delta_Mes_Ocupados_Inform,1, "", 2500,2)` respecto al trimestre anterior.
+
+```{r}
+  fc_salto_pagina()
+  ft_Delta_indicadores
+```
+
+# **3. Evolución histórica de las principales tasas del mercado laboral**
+
+En este punto se presenta la evolución histórica de las principales tasas del mercado laboral, considerando su trayectoria en el tiempo y sus variaciones interanuales, con el fin de complementar el análisis comparativo expuesto en las secciones anteriores.
+
+## 3.1. *Evolución histórica de la tasa de desocupación*
+
+La evolución histórica de la tasa de desocupación permite observar su trayectoria de mediano y largo plazo, así como identificar cambios en su comportamiento interanual en distintos momentos del ciclo económico y laboral. Debe considerarse que, en una perspectiva de largo plazo, la tasa de desocupación ha mostrado una tendencia al alza por casi 11 años. Esta situación coincidió con la ralentización del crecimiento económico en nuestro país.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_Tasa_Desocup_2010_Actual
+```
+
+## 3.2. *Evolución histórica de la tasa de participación*
+
+La evolución histórica de la tasa de participación permite caracterizar los cambios en la inserción de la población en la fuerza de trabajo, así como sus variaciones interanuales en distintos períodos. En lo especifico, la tasa de participación ha aumentado considerablemente desde el fin del COVID, alcanzando un `r fc_Form_Num(Tasa_Act_Particip)`%, aunque todavía se encuentra bajo la tendencia de la prepandemia. Sin embargo, el cambio efectivo refleja que  `r fc_frase_cambio(Delta_Covid_Tasa_Particip,1, "pp.", 1e-2,1)` A su vez, se encuentra lejos de los registros observados en los momentos más críticos de 2020, cuando la tasa retrocedió en casi 10 puntos porcentuales. Esta evolución da cuenta de una trayectoria de recuperación post pandemia de la participación laboral, que aún sigue en curso.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_Tasa_Particip_2010_Actual
+
+```
+Respecto de la participación laboral femenina, esta ha aumentado considerablemente desde el fin del COVID en `r fc_Form_Num(Delta_Covid_Tasa_Particip_Fem,1)` pp., alcanzando `r fc_Form_Num(Tasa_Act_Particip_Fem,1)`% en el último trimestre, ya estando recuperados los niveles de la prepandemia que llegaba a `r fc_Form_Num(Val_Covid_Tasa_Particip_Fem,1)`%. Nos encontramos lejos de los peores momentos de 2020, cuando la tasa retrocedió más de 10 pp. Esto se logró con medidas como los subsidios IFE Laboral y Protege, que beneficiaron a más de 1 millón de mujeres en tiempos del COVID y posterior a él.
+
+Sin embargo, sigue existiendo una brecha estructural de participación entre ambos sexos: `r fc_Form_Num(Tasa_Act_Particip_Hom,1)`% para hombres y `r fc_Form_Num(Tasa_Act_Particip_Fem,1)`% para mujeres, con una diferencia de `r fc_Form_Num(Brecha_Act_Particip,1)` pp. Detrás de estos fenómenos están los cuidados: más de `r fc_Form_Num(Val_Raz_Familia_MM,1)` millones de mujeres está fuera del mercado del trabajo por razones familiares permanentes, con un nivel de feminización de `r fc_Form_Num(Porc_Raz_Familia_M,1)`% mientras que en razones de estudios está más equilibrado con un `r fc_Form_Num(Porc_Estudio_M,1)`%.
+
+Teniendo en cuenta que, de las cinco principales razones para no participar en el mercado laboral, cuatro presentan una alta feminización y que las *razones familiares permanentes* son predominantemente femeninas, no resulta sorprendente observar menores tasas de participación laboral en mujeres. Un mayor detalle se presenta en la tabla siguiente.
+
+```{r tabla-fft2, echo=FALSE}
+  ft_Razon_FFT
+```
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_Razon_No_part
+```
+
+## 3.3.	*Evolución histórica de la ocupación*
+
+Entre 2022 y 2026, el número total de personas ocupadas aumentó desde `r fc_Form_Num(Val_Act_Ocupados_2022/1000000,1)` millones a `r fc_Form_Num(Val_Act_Ocupados/1000000,1)` millones, es decir, cerca de `r fc_Form_Num((Val_Act_Ocupados-Val_Act_Ocupados_2022)/1000,0)` mil ocupados adicionales. En términos de magnitud, la mayor parte del empleo sigue concentrándose en ocupaciones formales: en 2026 se registran `r fc_Form_Num(Val_Act_Ocupados_Form/1000000,1)` millones de ocupados formales, frente a `r fc_Form_Num(Val_Act_Ocupados_Inform/1000000,1)` millones de ocupados informales. Por tanto, aunque la informalidad sigue representando una proporción relevante del empleo, el stock principal del mercado laboral continúa siendo formal.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_Ocupacion_2017_Actual
+```
+
+Sin embargo, al mirar la variación a doce meses, la señal reciente cambia. En el último año, el aumento total de ocupados fue de aproximadamente `r fc_Form_Num(Delta_Año_Ocupados/1000,1)` mil personas, pero este crecimiento estuvo explicado por el empleo informal: los ocupados informales aumentaron en `r fc_Form_Num(Delta_Año_Ocupados_Inform/1000,1)` mil, mientras que los ocupados formales disminuyeron en `r fc_Form_Num(Delta_Año_Ocupados_Form/1000,1)` mil. En consecuencia, la creación neta reciente de empleo ha estado impulsada por ocupaciones informales, lo que modera la lectura positiva del aumento total de ocupados. Además nos encontramos con que en términos de población, el crecimiento de los ocupados no alcanza a cubrir el incremento de la PET con `r fc_Form_Num(Delta_Año_PET/1000,1)` mil personas, por lo que la tasa de desempleo se ha visto incrementada.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_Delta_Ocupados_Inf_12m
+```
+
+La tasa de ocupación de asalariados informales se ubicó en `r fc_Form_Num(Tasa_Act_Asal_dep_Inform,1)`%, registrando `r fc_frase_cambio(Delta_Tasa_Asal_dep_Inform,1, "pp.", 1e-2,2)` respecto de año anterior. Esto confirma una tendencia al alza, donde  `r fc_frase_cambio(Delta_Tasa_Asal_dep_Inform_Fem,1, "pp.", 1e-2,5)` interanual para las mujeres asalariadas informales, con un `r fc_Form_Num(Tasa_Act_Asal_dep_Inform_Fem,1)`% al trimestre actual. En términos de magnitudes, las personas asalariadas informales alcanzaron los `r fc_Form_Num(Val_Act_Asal_dep_Inform,0)`  a nivel nacional y `r fc_frase_cambio(Delta_Año_Asal_dep_Inform,0, "", 1e-2,6)` personas en doce meses, derivado de un alza en `r fc_Form_Num(Delta_Año_Asal_dep_Inform-Delta_Año_Asal_dep_Inform_Fem,0)` en hombres y `r fc_Form_Num(Delta_Año_Asal_dep_Inform_Fem,0)` en mujeres asalariadas informales.
+
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_asal_dep_inf_Sexo
+```
+
+Al desagregar la variación del empleo por categoría ocupacional, se observa que el crecimiento de los ocupados está impulsado por un tercer trimestre consecutivo de caída en los asalariados formales, compensando por un sostenido aumento, también por tercer trimestre consecutivo, en los asalariados informales y en los trabajadores por cuenta propia.
+
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  gr_delta_Ocup_incid_categ
+```
+
+## **4. Crecimiento de la demanda laboral y su composición interna**
+
+Detrás de la cifra de crecimiento interanual del empleo, se advierte `r fc_frase_cambio(Delta_Año_Ocupados_Inform,0, "", 2300,1)` del empleo informal, como `r fc_frase_cambio(Delta_Año_Ocupados_Form,0, "", 4300,2)` del empleo formal.
+
+Así también, la cifra esconde cambios en la composición por categoría de empleo. En el último año, el número de asalariados del sector privado `r fc_frase_cambio(Delta_Año_Asal_Priv,0, ",", 2000,1)` lo que equivale a una variación de `r fc_Form_Num(Tasa_Año_Asal_Priv,1)` pp., mientras que el número de asalariados del sector público `r fc_frase_cambio(Delta_Año_Asal_Pub,0, "empleos", 1e-1,1)`, con una variación de `r fc_Form_Num(Tasa_Año_Asal_Pub,1)` pp.
+
+De igual forma, el número de trabajadores de servicio doméstico `r fc_frase_cambio(Delta_Año_Asal_Sdom,0, "empleos", 1e-1,1)`, equivalente a `r fc_Form_Num(Tasa_Año_Asal_Sdom,1)` pp., mientras que el número de trabajadores independientes `r fc_frase_cambio(Delta_Año_Asal_Indep,0, "empleos", 1e-1,1)`, con una variación de `r fc_Form_Num(Tasa_Año_Asal_Indep,1)` pp.
+
+Al centrarse exclusivamente en el sector privado, se observa que el número de ocupaciones formales `r fc_frase_cambio(Delta_Año_Asal_Priv_Form,0, "empleos", 1e-1,1)`, lo que corresponde a una variación de `r fc_Form_Num(Tasa_Año_Asal_Priv_Form,1)` pp., mientras que el número de ocupaciones informales `r fc_frase_cambio(Delta_Año_Asal_Priv_Inform,0, "empleos", 1e-1,1)`, con una variación interanual de `r fc_Form_Num(Tasa_Año_Asal_Priv_Inform,1)`%, en línea con lo que la teoría planteada respecto de los cambios estructurales en el mercado laboral.
+
+Sin embargo, la tasa de informalidad laboral se encuentra en niveles mínimos históricos, sin considerar la pandemia. La tasa de ocupación informal (TOI) ha caído desde `r fc_Form_Num(Val_Covid_Tasa_Inform,1)`% en la prepandemia (`r fc_fecha_a_trimestre(fecha6annos)`) a `r fc_Form_Num(Tasa_Act_Inform,1)`% en el trimestre `r fc_fecha_a_trimestre(fecha_Actual)`, aun cuando en esta condición permanecen poco más de `r fc_Form_Num(Val_Act_Ocupados_Inform/1000000,1)` millones de personas, lo que se explica por el progresivo aumento de personas ocupadas en el mercado laboral.
+
+Anexo 1. Sector Económico
+
+La tabla presenta la variación del empleo formal por sector económico, identificando los sectores que crearon y destruyeron empleos durante el trimestre móvil terminado en febrero de 2026.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  ft_Empleos_Sector_y_d12m
+```
+
+Anexo 2. Regiones
+
+La tabla presenta la tasa de desocupación por región y sus variaciones trimestrales e interanuales, permitiendo comparar la situación laboral regional durante el trimestre móvil terminado en febrero de 2026.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  ft_TDesocup_Region_m_y_d12m
+```
+
+La tabla presenta la tasa de ocupación informal y la proporción de asalariados informales por región, permitiendo comparar los niveles de informalidad laboral a nivel regional.
+
+```{r, fig.width=10, fig.height=6, dpi=300}
+  ft_TInform_Region
+```
+
+Anexo 3. Resumen indicadores varios
+
+La tabla presenta la variación mensual de las principales categorías laborales entre DEF y EFM 2026, mostrando los aumentos y disminuciones registrados en cada indicador.
+
+```{r}
+  ft_MVar_y_DMes
+```
+
+La tabla presenta la variación mensual de los principales indicadores laborales entre EFM 2025 y EFM 2026, mostrando los cambios observados en empleo, desocupación, informalidad y participación laboral.
+
+```{r}
+  ft_MVar_y_DAnno
+```
+
+La tabla presenta la variación post covid de los principales indicadores laborales entre JJA 2021 y EFM 2026, mostrando los cambios observados en empleo, desocupación, informalidad y participación laboral.
+
+```{r}
+  ft_MVar_y_DPostCOVID
+```
+
+
+
